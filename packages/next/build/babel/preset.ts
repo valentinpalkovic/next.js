@@ -43,6 +43,7 @@ type NextBabelPresetOptions = {
   'transform-runtime'?: any
   'styled-jsx'?: StyledJsxBabelOptions
   'preset-typescript'?: any
+  'keep-react-prop-types'?: boolean
 }
 
 type BabelPreset = {
@@ -190,12 +191,13 @@ export default (
         styledJsxOptions(options['styled-jsx']),
       ],
       require('./plugins/amp-attributes'),
-      isProduction && [
-        require('next/dist/compiled/babel/plugin-transform-react-remove-prop-types'),
-        {
-          removeImport: true,
-        },
-      ],
+      isProduction &&
+        !options['keep-react-prop-types'] && [
+          require('next/dist/compiled/babel/plugin-transform-react-remove-prop-types'),
+          {
+            removeImport: true,
+          },
+        ],
       isServer && require('next/dist/compiled/babel/plugin-syntax-bigint'),
       // Always compile numeric separator because the resulting number is
       // smaller.
